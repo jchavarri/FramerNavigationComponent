@@ -44,10 +44,7 @@ class exports.NavigationController
 			if typeof nextLayer.layerWillAppear is "function"
 				nextLayer.layerWillAppear()
 			@currentLayerIndex++
-			animationContext = 
-				fromLayer: currentLayer
-				toLayer: nextLayer
-			@animationPush(animationContext)
+			@animationPush(currentLayer, nextLayer)
 			Utils.delay @animationTime, =>
 				@lock = false
 		else
@@ -64,10 +61,7 @@ class exports.NavigationController
 					currentLayer.layerWillDisappear()
 				if typeof nextLayer.layerWillAppear is "function"
 					nextLayer.layerWillAppear()
-				animationContext = 
-					fromLayer: currentLayer
-					toLayer: nextLayer
-				@animationPop(animationContext)
+				@animationPop(currentLayer, nextLayer)
 				Utils.delay @animationTime, =>
 					@navigationLayers.pop(currentLayer)
 					@currentLayerIndex--
@@ -76,25 +70,25 @@ class exports.NavigationController
 			else
 				@lock = false
 
-	_defaultAnimationPush: (animationContext) ->
-		animationContext.fromLayer.animate
+	_defaultAnimationPush: (fromLayer, toLayer) ->
+		fromLayer.animate
 			properties:
 				x: -@navigationContainer.width * 0.25
 			curve: _ANIMATION_CURVE
 			time: _ANIMATION_TIME
-		animationContext.toLayer.animate
+		toLayer.animate
 			properties:
 				x: 0
 			curve: _ANIMATION_CURVE
 			time: _ANIMATION_TIME
 
-	_defaultAnimationPop: (animationContext) ->
-		animationContext.fromLayer.animate
+	_defaultAnimationPop: (fromLayer, toLayer) ->
+		fromLayer.animate
 			properties:
 				x: @navigationContainer.width
 			curve: _ANIMATION_CURVE
 			time: _ANIMATION_TIME
-		animationContext.toLayer.animate
+		toLayer.animate
 			properties:
 				x: 0
 			curve: _ANIMATION_CURVE
