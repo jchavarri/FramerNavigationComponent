@@ -1,6 +1,6 @@
 class exports.NavigationController extends Layer
 	
-	_ANIMATION_TIME = 0.4
+	_ANIMATION_TIME = 2.4
 	_ANIMATION_CURVE = "cubic-bezier(.6, .1, .3, 1)"
 	navigationControllersCounter = 1
 	
@@ -27,11 +27,6 @@ class exports.NavigationController extends Layer
 		@currentLayerIndex = -1
 		@lock = false
 		
-		if @options.initialLayer
-			@navigationLayers = [@options.initialLayer]
-			@currentLayerIndex = 0
-			@addSubLayer(@options.initialLayer)
-
 		if @options.headerLayer
 			@headerLayer = @options.headerLayer
 			@addSubLayer(@headerLayer)
@@ -40,14 +35,28 @@ class exports.NavigationController extends Layer
 				width: @width
 				height: 88
 				backgroundColor: "rgba(248, 248, 248, 0.9)"
-			if Framer.Device.deviceType.indexOf("iphone-6") >= 0
+			if Framer.Device.deviceType.indexOf("iphone-6plus") >= 0
 				@headerLayer.height = 132
+
+			@headerLayer.style =
+				"font-size" : @headerLayer.height / 2 + "px"
+				"color" : "black"
+				"line-height" : @headerLayer.height + "px"
+				"font-weight" : "500"
+				"text-align" : "center"
+				"font-family": "'Helvetica Neue', Helvetica, Arial, sans-serif"
 	
+
+		if @options.initialLayer
+			@navigationLayers = [@options.initialLayer]
+			@currentLayerIndex = 0
+			@addSubLayer(@options.initialLayer)
+			if @options.initialLayer.title
+				@headerLayer.html = @options.initialLayer.title
 
 	pushLayer: (layer) ->
 		if not @lock
 			@lock = true
-			layer.x = @width
 			@navigationLayers.push(layer)
 			@addSubLayer(layer)
 			currentLayer = @navigationLayers[@currentLayerIndex]
@@ -101,6 +110,10 @@ class exports.NavigationController extends Layer
 				x: -@width * 0.25
 			curve: _ANIMATION_CURVE
 			time: _ANIMATION_TIME
+		toLayer.shadowColor = "rgba(0,0,0,0.2)"
+		toLayer.shadowX = -10
+		toLayer.shadowBlur = 14
+		toLayer.x = @width + (-toLayer.shadowX)
 		toLayer.animate
 			properties:
 				x: 0
@@ -110,7 +123,7 @@ class exports.NavigationController extends Layer
 	_defaultAnimationPop: (fromLayer, toLayer) ->
 		fromLayer.animate
 			properties:
-				x: @width
+				x: @width + (-fromLayer.shadowX)
 			curve: _ANIMATION_CURVE
 			time: _ANIMATION_TIME
 		toLayer.animate

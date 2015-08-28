@@ -4,11 +4,11 @@ firstLayer = new Layer
 	width: Screen.width
 	height: Screen.height
 	html: "1"
-	title: "My title"
-	backgroundColor: Framer.Utils.randomColor()
-	
+	backgroundColor: "white"
+firstLayer.title = "First screen"
 firstLayer.style =
 	"font-size" : "600px",
+	"color" : "orange",
 	"line-height" : Screen.height + "px",
 	"font-weight" : "bold",
 	"text-align" : "center",
@@ -24,7 +24,8 @@ firstLayer.on Events.Click, ->
 		html: "2"
 	secondLayer.style = firstLayer.style
 	secondLayer.backgroundColor = Framer.Utils.randomColor()
-
+	secondLayer.color = "white"
+	
 	secondLayer.on Events.Click, ->
 		navigationController.popLayer()
 	navigationController.pushLayer(secondLayer)
