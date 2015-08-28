@@ -1,4 +1,4 @@
-NavigationController = (require "NavigationController").NavigationController
+NavigationController = (require "navigationController").NavigationController
 
 firstLayer = new Layer
 	width: Screen.width
@@ -13,7 +13,8 @@ firstLayer.style =
 	"font-weight" : "bold",
 	"text-align" : "center",
 
-navigationController = new NavigationController({initialLayer: firstLayer})
+navigationController = new NavigationController
+	initialLayer: firstLayer
 
 
 firstLayer.on Events.Click, ->

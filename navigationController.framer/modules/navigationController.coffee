@@ -1,16 +1,25 @@
-class exports.NavigationController
+class exports.NavigationController extends Layer
 	
 	_ANIMATION_TIME = 0.4
 	_ANIMATION_CURVE = "cubic-bezier(.6, .1, .3, 1)"
+	navigationControllersCounter = 1
 	
 	constructor: (@options={}) ->
+
+		# Check required params
+		if not @options.initialLayer
+			throw new Error("Can't initialize NavigationController: parameter 'initialLayer' is required.")
+			return
 
 		@options.width           ?= Screen.width
 		@options.height          ?= Screen.height
 		@options.clip            ?= true
 		@options.backgroundColor ?= "transparent"
+		@options.name 			 ?= "NavigationController " + navigationControllersCounter
 
-		@navigationContainer = new Layer @options
+		super @options
+		navigationControllersCounter++
+
 		@navigationLayers   = []
 		@animationTime 		= @options.animationTime or _ANIMATION_TIME
 		@animationPush 		= @options.animationPush or @_defaultAnimationPush
@@ -21,22 +30,26 @@ class exports.NavigationController
 		if @options.initialLayer
 			@navigationLayers = [@options.initialLayer]
 			@currentLayerIndex = 0
-			@navigationContainer.addSubLayer(@options.initialLayer)
+			@addSubLayer(@options.initialLayer)
 
 		if @options.headerLayer
 			@headerLayer = @options.headerLayer
-			@navigationContainer.addSubLayer(@headerLayer)
-			that = this
-			@headerLayer.on Events.Click, ->
-				that.popLayer()
-
+			@addSubLayer(@headerLayer)
+		else # Default header
+			@headerLayer = new Layer
+				width: @width
+				height: 88
+				backgroundColor: "rgba(248, 248, 248, 0.9)"
+			if Framer.Device.deviceType.indexOf("iphone-6") >= 0
+				@headerLayer.height = 132
+	
 
 	pushLayer: (layer) ->
 		if not @lock
 			@lock = true
-			layer.x = @navigationContainer.width
+			layer.x = @width
 			@navigationLayers.push(layer)
-			@navigationContainer.addSubLayer(layer)
+			@addSubLayer(layer)
 			currentLayer = @navigationLayers[@currentLayerIndex]
 			nextLayer = layer
 			if typeof currentLayer.layerWillDisappear is "function"
@@ -71,9 +84,21 @@ class exports.NavigationController
 				@lock = false
 
 	_defaultAnimationPush: (fromLayer, toLayer) ->
+		shadowLayer = new Layer
+			superLayer: fromLayer
+			width: fromLayer.width
+			height: fromLayer.height
+			name: "shadowLayer"
+			backgroundColor: "black"
+			opacity: 0
+		shadowLayer.animate
+			properties:
+				opacity: 0.2
+			curve: _ANIMATION_CURVE
+			time: _ANIMATION_TIME
 		fromLayer.animate
 			properties:
-				x: -@navigationContainer.width * 0.25
+				x: -@width * 0.25
 			curve: _ANIMATION_CURVE
 			time: _ANIMATION_TIME
 		toLayer.animate
@@ -85,7 +110,7 @@ class exports.NavigationController
 	_defaultAnimationPop: (fromLayer, toLayer) ->
 		fromLayer.animate
 			properties:
-				x: @navigationContainer.width
+				x: @width
 			curve: _ANIMATION_CURVE
 			time: _ANIMATION_TIME
 		toLayer.animate
@@ -93,3 +118,14 @@ class exports.NavigationController
 				x: 0
 			curve: _ANIMATION_CURVE
 			time: _ANIMATION_TIME
+		shadowLayer = toLayer.subLayersByName("shadowLayer")[0]
+		shadowLayerAnimation = new Animation
+			layer: shadowLayer
+			properties:
+				opacity: 0
+			curve: _ANIMATION_CURVE
+			time: _ANIMATION_TIME
+		shadowLayerAnimation.start()
+		shadowLayerAnimation.on "end", ->
+			shadowLayer.destroy()
+		

@@ -2,11 +2,11 @@
 
 Reusable components for Framer, based on iOS
 
-**NOTE:** FramiOS is a work in progress. Any suggestions or pull requests are more then welcomed.
+**NOTE:** FramiOS is a work in progress and in a very early stage. Any suggestions or PRs are more then welcomed!
 
 ## Components
 
-### 1. Navigation Controller
+### Navigation Controller
 
 Implements a navigation controller with a similar default configuration as the iOS one.
 
@@ -15,12 +15,17 @@ Implements a navigation controller with a similar default configuration as the i
 - `firstLayer` _(required)_ — The layer to initialize the navigation controller with.
 - `animationPush` — A function that is called when the push animation is needed. It expects two parameters: `fromLayer` -the layer that is on-screen and is going to be pushed- and `toLayer` -the layer that will be shown-. Use this parameter to implement custom animations.
 - `animationPop` — You guessed it :) Same as `animationPush` but when popping.
-- `animationTime` — A custom transition time. **This parameter is required when implementing custom animations.
+- `animationTime` — A custom transition time. **This parameter is required when implementing custom animations**.
 
 #### Methods
 
 - `pushLayer` — Push a new layer into the navigation controller.
-- `popLayer` — Pop the latest added layer from the navigation controller.
+- `popLayer` — Pop the latest added layer from the navigation controller. NOTE: The layer popped is destroyed after being removed from the navigation controller, so you might want to create a copy if you want to reuse it later.
+
+#### Methods
+
+- `pushLayer` — Push a new layer into the navigation controller.
+- `popLayer` — Pop the latest added layer from the navigation controller. NOTE: The layer popped is destroyed after being removed from the navigation controller, so you might want to create a copy if you want to reuse it later.
 
 #### Simple example
 
@@ -55,3 +60,20 @@ firstLayer.on Events.Click, ->
 	navigationController.pushLayer(secondLayer)
 
 ```
+
+## TODO
+
+- Navigation controller
+	- Add slide right to pop
+	- Add popToRootLayer
+	- Add header back button
+
+- Add other components
+	- Table View
+	- Refresh control
+	- Segmented control
+	- Switch
+	- Text Field
+	- Picker
+	- Date picker
+
