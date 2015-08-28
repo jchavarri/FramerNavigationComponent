@@ -1,6 +1,6 @@
 class exports.NavigationController extends Layer
 	
-	_ANIMATION_TIME = 2.4
+	_ANIMATION_TIME = 0.4
 	_ANIMATION_CURVE = "cubic-bezier(.6, .1, .3, 1)"
 	navigationControllersCounter = 1
 	
@@ -39,7 +39,7 @@ class exports.NavigationController extends Layer
 				@headerLayer.height = 132
 
 			@headerLayer.style =
-				"font-size" : @headerLayer.height / 2 + "px"
+				"font-size" : @headerLayer.height / 2.5 + "px"
 				"color" : "black"
 				"line-height" : @headerLayer.height + "px"
 				"font-weight" : "500"
@@ -54,7 +54,7 @@ class exports.NavigationController extends Layer
 			if @options.initialLayer.title
 				@headerLayer.html = @options.initialLayer.title
 
-	pushLayer: (layer) ->
+	push: (layer) ->
 		if not @lock
 			@lock = true
 			@navigationLayers.push(layer)
@@ -73,7 +73,7 @@ class exports.NavigationController extends Layer
 			# If there was a transitioning going on, just remove the new layer
 			layer.destroy()
 		
-	popLayer: ->
+	pop: ->
 		if not @lock
 			@lock = true
 			if @currentLayerIndex > 0
@@ -119,6 +119,8 @@ class exports.NavigationController extends Layer
 				x: 0
 			curve: _ANIMATION_CURVE
 			time: _ANIMATION_TIME
+		if toLayer.title
+				@headerLayer.html = toLayer.title
 
 	_defaultAnimationPop: (fromLayer, toLayer) ->
 		fromLayer.animate
@@ -141,4 +143,6 @@ class exports.NavigationController extends Layer
 		shadowLayerAnimation.start()
 		shadowLayerAnimation.on "end", ->
 			shadowLayer.destroy()
+		if toLayer.title
+				@headerLayer.html = toLayer.title
 		

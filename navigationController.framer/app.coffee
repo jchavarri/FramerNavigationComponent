@@ -22,12 +22,13 @@ firstLayer.on Events.Click, ->
 		width: Screen.width
 		height: Screen.height
 		html: "2"
+	secondLayer.title = "Second screen"
 	secondLayer.style = firstLayer.style
 	secondLayer.backgroundColor = Framer.Utils.randomColor()
 	secondLayer.color = "white"
 	
 	secondLayer.on Events.Click, ->
-		navigationController.popLayer()
-	navigationController.pushLayer(secondLayer)
+		navigationController.pop()
+	navigationController.push(secondLayer)
 
 

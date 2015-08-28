@@ -17,15 +17,16 @@ Implements a navigation controller with a similar default configuration as the i
 - `animationPop` — You guessed it :) Same as `animationPush` but when popping.
 - `animationTime` — A custom transition time. **This parameter is required when implementing custom animations**.
 
+#### Properties
+
+- `navigationLayers` — The array of layers that are handled by the navigation controller.
+- `headerLayer` — The layer that is shown on top of the navigation layer. By default, this layer shows always a custom property `title` string that can be added to each layer added to the navigation controller.
+- `currentLayerIndex` — The index of the layer that is being shown.
+
 #### Methods
 
-- `pushLayer` — Push a new layer into the navigation controller.
-- `popLayer` — Pop the latest added layer from the navigation controller. NOTE: The layer popped is destroyed after being removed from the navigation controller, so you might want to create a copy if you want to reuse it later.
-
-#### Methods
-
-- `pushLayer` — Push a new layer into the navigation controller.
-- `popLayer` — Pop the latest added layer from the navigation controller. NOTE: The layer popped is destroyed after being removed from the navigation controller, so you might want to create a copy if you want to reuse it later.
+- `push` — Push a new layer into the navigation controller.
+- `pop` — Pop the latest added layer from the navigation controller. NOTE: The layer popped is destroyed after being removed from the navigation controller, so you might want to create a copy if you want to reuse it later.
 
 #### Simple example
 
