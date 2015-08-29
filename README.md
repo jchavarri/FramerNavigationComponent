@@ -12,15 +12,15 @@ iOS based components for Framer. They have a default behavior and look, but can 
 
 ## Components
 
-### Navigation Controller
+### Navigation Component
 
-Implements a navigation controller with a similar default configuration as the iOS one.
+Implements a navigation component with a similar default configuration as the iOS one.
 
 [Documentation](modules/navigationComponent.md)
 
 ## TODO
 
-- Navigation controller
+- Navigation component
 	- Add slide right to pop
 	- Add popToRootLayer
 	- Add header back button
