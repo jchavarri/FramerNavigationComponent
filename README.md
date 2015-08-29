@@ -14,7 +14,7 @@ iOS based components for Framer. They have a default behavior and look, but can 
 
 ### Navigation Component
 
-Implements a navigation component with a similar default configuration as the iOS one.
+Implements a navigation component with a similar default configuration as the iOS one. All its behavior and styles are easily customized, both for the animations between layers and the header layer.
 
 [Documentation](modules/navigationComponent.md)
 
