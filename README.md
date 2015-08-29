@@ -41,3 +41,7 @@ Thanks to the following creators for sharing their work:
 
 - [framer-viewNavigationComponent](https://github.com/chriscamargo/framer-viewNavigationComponent) by Chris Camargo
 - [Cloning the UI of iOS 7 with HTML, CSS and JavaScript](http://come.ninja/2013/cloning-the-ui-of-ios-7-with-html-css-and-javascript/) by Côme Courteault
+
+Other references: 
+
+- [iOS 8 Design Cheat Sheet for iPhone 6 and iPhone 6 Plus](http://click-labs.com/ios-8-design-cheat-sheet-and-free-iphone6plus-gui-psd/)

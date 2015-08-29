@@ -1,6 +1,6 @@
 # Navigation Component
 
-Implements a navigation component that includes a similar look as the iOS7 one.
+Implements a navigation component that includes a similar look as the iOS7 / iOS8 one.
 
 ## Basic usage
 
