@@ -1,6 +1,6 @@
 class exports.NavigationController extends Layer
 	
-	_ANIMATION_TIME = 0.4
+	_ANIMATION_TIME = 2.4
 	_ANIMATION_CURVE = "cubic-bezier(.6, .1, .3, 1)"
 	navigationControllersCounter = 1
 	
