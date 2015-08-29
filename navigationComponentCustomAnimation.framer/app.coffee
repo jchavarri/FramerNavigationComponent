@@ -1,4 +1,4 @@
-NavigationController = (require "navigationController").NavigationController
+NavigationComponent = (require "navigationComponent").NavigationComponent
 
 firstLayer = new Layer
 	width: Screen.width
@@ -32,7 +32,7 @@ animationPush = (fromLayer, toLayer) ->
 		time: animationTime
 		curve: animationCurve
 	if toLayer.title
-		navigationController.headerLayer.html = toLayer.title
+		navigationComponent.headerLayer.html = toLayer.title
 animationPop = (fromLayer, toLayer) ->
 	fromLayer.animate
 		properties:
@@ -47,9 +47,9 @@ animationPop = (fromLayer, toLayer) ->
 		time: animationTime
 		curve: animationCurve
 	if toLayer.title
-		navigationController.headerLayer.html = toLayer.title
+		navigationComponent.headerLayer.html = toLayer.title
 	
-navigationController = new NavigationController
+navigationComponent = new NavigationComponent
 	initialLayer: firstLayer
 	animationTime: animationTime
 	animationPush: animationPush
@@ -66,7 +66,7 @@ firstLayer.on Events.Click, ->
 	secondLayer.color = "white"
 	
 	secondLayer.on Events.Click, ->
-		navigationController.pop()
-	navigationController.push(secondLayer)
+		navigationComponent.pop()
+	navigationComponent.push(secondLayer)
 
 

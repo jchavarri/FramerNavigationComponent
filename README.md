@@ -16,7 +16,7 @@ iOS based components for Framer. They have a default behavior and look, but can 
 
 Implements a navigation controller with a similar default configuration as the iOS one.
 
-[Documentation](modules/navigationController.md)
+[Documentation](modules/navigationComponent.md)
 
 ## TODO
 
@@ -39,5 +39,5 @@ Implements a navigation controller with a similar default configuration as the i
 
 Thanks to the following creators for sharing their work:
 
-- [framer-viewNavigationController](https://github.com/chriscamargo/framer-viewNavigationController) by Chris Camargo
+- [framer-viewNavigationComponent](https://github.com/chriscamargo/framer-viewNavigationComponent) by Chris Camargo
 - [Cloning the UI of iOS 7 with HTML, CSS and JavaScript](http://come.ninja/2013/cloning-the-ui-of-ios-7-with-html-css-and-javascript/) by Côme Courteault

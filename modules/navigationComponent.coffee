@@ -1,24 +1,24 @@
-class exports.NavigationController extends Layer
+class exports.NavigationComponent extends Layer
 	
-	_ANIMATION_TIME = 2.4
+	_ANIMATION_TIME = 0.4
 	_ANIMATION_CURVE = "cubic-bezier(.6, .1, .3, 1)"
-	navigationControllersCounter = 1
+	navigationComponentsCounter = 1
 	
 	constructor: (@options={}) ->
 
 		# Check required params
 		if not @options.initialLayer
-			throw new Error("Can't initialize NavigationController: parameter 'initialLayer' is required.")
+			throw new Error("Can't initialize NavigationComponent: parameter 'initialLayer' is required.")
 			return
 
 		@options.width           ?= Screen.width
 		@options.height          ?= Screen.height
 		@options.clip            ?= true
 		@options.backgroundColor ?= "transparent"
-		@options.name 			 ?= "NavigationController " + navigationControllersCounter
+		@options.name 			 ?= "NavigationComponent " + navigationComponentsCounter
 
 		super @options
-		navigationControllersCounter++
+		navigationComponentsCounter++
 
 		@navigationLayers   = []
 		@animationTime 		= @options.animationTime or _ANIMATION_TIME

@@ -4,9 +4,9 @@ Implements a navigation controller with a similar default configuration as the i
 
 ## Basic usage
 
-- Copy the `navigationController.coffee` file into your `modules` folder
-- Add `NavigationController = (require "navigationController").NavigationController`
-- Create the NavigationController: `navigationController = new NavigationController
+- Copy the `navigationComponent.coffee` file into your `modules` folder
+- Add `NavigationComponent = (require "navigationComponent").NavigationComponent`
+- Create the NavigationComponent: `navigationComponent = new NavigationComponent
 	initialLayer: yourFirstLayer`
 
 ## Constructor params
@@ -44,7 +44,7 @@ firstLayer.style =
 	"font-weight" : "bold",
 	"text-align" : "center",
 
-navigationController = new NavigationController({initialLayer: firstLayer})
+navigationComponent = new NavigationComponent({initialLayer: firstLayer})
 
 
 firstLayer.on Events.Click, ->
@@ -56,6 +56,6 @@ firstLayer.on Events.Click, ->
 	secondLayer.backgroundColor = Framer.Utils.randomColor()
 
 	secondLayer.on Events.Click, ->
-		navigationController.popLayer()
-	navigationController.pushLayer(secondLayer)
+		navigationComponent.popLayer()
+	navigationComponent.pushLayer(secondLayer)
 ```

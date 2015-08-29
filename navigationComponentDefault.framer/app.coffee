@@ -1,4 +1,4 @@
-NavigationController = (require "navigationController").NavigationController
+NavigationComponent = (require "navigationComponent").NavigationComponent
 
 firstLayer = new Layer
 	width: Screen.width
@@ -13,7 +13,7 @@ firstLayer.style =
 	"font-weight" : "bold",
 	"text-align" : "center",
 
-navigationController = new NavigationController
+navigationComponent = new NavigationComponent
 	initialLayer: firstLayer
 
 
@@ -28,7 +28,7 @@ firstLayer.on Events.Click, ->
 	secondLayer.color = "white"
 	
 	secondLayer.on Events.Click, ->
-		navigationController.pop()
-	navigationController.push(secondLayer)
+		navigationComponent.pop()
+	navigationComponent.push(secondLayer)
 
 
