@@ -4,6 +4,12 @@ iOS based components for Framer. They have a default behavior and look, but can 
 
 **NOTE:** FramiOS is a work in progress and in a very early stage. Any suggestions or PRs are more then welcomed!
 
+## Basic usage
+
+- Download the repository
+- Copy the components you want to use in the `modules` folder
+- Add the `require` expressions to your files (you can check each module documentation for that)
+
 ## Components
 
 ### Navigation Controller

@@ -2,6 +2,13 @@
 
 Implements a navigation controller with a similar default configuration as the iOS one.
 
+## Basic usage
+
+- Copy the `navigationController.coffee` file into your `modules` folder
+- Add `NavigationController = (require "navigationController").NavigationController`
+- Create the NavigationController: `navigationController = new NavigationController
+	initialLayer: yourFirstLayer`
+
 ## Constructor params
 
 - `firstLayer` _(required)_ — The layer to initialize the navigation controller with.

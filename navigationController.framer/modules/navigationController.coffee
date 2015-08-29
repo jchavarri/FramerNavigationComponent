@@ -1,8 +1,11 @@
 class exports.NavigationController extends Layer
 	
-	_ANIMATION_TIME = 0.4
-	_ANIMATION_CURVE = "cubic-bezier(.6, .1, .3, 1)"
-	navigationControllersCounter = 1
+	# Private "constants"
+	_DEFAULT_ANIMATION_TIME = 0.4
+	_DEFAULT_ANIMATION_CURVE = "cubic-bezier(.6, .1, .3, 1)"
+	
+	# Private variables
+	_navigationControllersCounter = 1
 	
 	constructor: (@options={}) ->
 
@@ -15,13 +18,15 @@ class exports.NavigationController extends Layer
 		@options.height          ?= Screen.height
 		@options.clip            ?= true
 		@options.backgroundColor ?= "transparent"
-		@options.name 			 ?= "NavigationController " + navigationControllersCounter
+		@options.name 			 ?= "NavigationController " + _navigationControllersCounter
 
 		super @options
-		navigationControllersCounter++
+		
+		# Increment the nav controllers counter after it's been created, for labelling purposes
+		_navigationControllersCounter++
 
 		@navigationLayers   = []
-		@animationTime 		= @options.animationTime or _ANIMATION_TIME
+		@animationTime 		= @options.animationTime or _DEFAULT_ANIMATION_TIME
 		@animationPush 		= @options.animationPush or @_defaultAnimationPush
 		@animationPop		= @options.animationPop or @_defaultAnimationPop
 		@currentLayerIndex = -1
@@ -103,13 +108,13 @@ class exports.NavigationController extends Layer
 		shadowLayer.animate
 			properties:
 				opacity: 0.2
-			curve: _ANIMATION_CURVE
-			time: _ANIMATION_TIME
+			curve: _DEFAULT_ANIMATION_CURVE
+			time: _DEFAULT_ANIMATION_TIME
 		fromLayer.animate
 			properties:
 				x: -@width * 0.25
-			curve: _ANIMATION_CURVE
-			time: _ANIMATION_TIME
+			curve: _DEFAULT_ANIMATION_CURVE
+			time: _DEFAULT_ANIMATION_TIME
 		toLayer.shadowColor = "rgba(0,0,0,0.2)"
 		toLayer.shadowX = -10
 		toLayer.shadowBlur = 14
@@ -117,29 +122,29 @@ class exports.NavigationController extends Layer
 		toLayer.animate
 			properties:
 				x: 0
-			curve: _ANIMATION_CURVE
-			time: _ANIMATION_TIME
+			curve: _DEFAULT_ANIMATION_CURVE
+			time: _DEFAULT_ANIMATION_TIME
 		if toLayer.title
-				@headerLayer.html = toLayer.title
+			@headerLayer.html = toLayer.title
 
 	_defaultAnimationPop: (fromLayer, toLayer) ->
 		fromLayer.animate
 			properties:
 				x: @width + (-fromLayer.shadowX)
-			curve: _ANIMATION_CURVE
-			time: _ANIMATION_TIME
+			curve: _DEFAULT_ANIMATION_CURVE
+			time: _DEFAULT_ANIMATION_TIME
 		toLayer.animate
 			properties:
 				x: 0
-			curve: _ANIMATION_CURVE
-			time: _ANIMATION_TIME
+			curve: _DEFAULT_ANIMATION_CURVE
+			time: _DEFAULT_ANIMATION_TIME
 		shadowLayer = toLayer.subLayersByName("shadowLayer")[0]
 		shadowLayerAnimation = new Animation
 			layer: shadowLayer
 			properties:
 				opacity: 0
-			curve: _ANIMATION_CURVE
-			time: _ANIMATION_TIME
+			curve: _DEFAULT_ANIMATION_CURVE
+			time: _DEFAULT_ANIMATION_TIME
 		shadowLayerAnimation.start()
 		shadowLayerAnimation.on "end", ->
 			shadowLayer.destroy()
