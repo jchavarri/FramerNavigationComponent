@@ -1,9 +1,11 @@
 # Navigation Component
 
-A navigation component for Framer. It includes:
+A navigation component for Framer. It features:
 
-- Default transitions for pushing and popping views, based on iOS UINavigationController, that you can replace with your own ones.
+- Default transitions animations for pushing and popping views, based on iOS UINavigationController, that you can replace with your own ones.
 - Default header style and animations to show the current and previous layer, also easily customizable.
+- Default header style adapts to iPhone6+ screen size
+- Custom events are emitted before and after popping and pushing
 
 ## Examples
 
