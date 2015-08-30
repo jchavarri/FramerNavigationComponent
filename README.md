@@ -18,6 +18,8 @@ Implements a navigation component with a similar default configuration as the iO
 
 [Documentation](modules/navigationComponent.md)
 
+![Navigation component](navigationComponentComplex.framer/images/demo.gif)
+
 ## TODO
 
 - Navigation component
