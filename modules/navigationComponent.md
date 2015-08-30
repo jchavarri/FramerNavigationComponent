@@ -1,6 +1,9 @@
 # Navigation Component
 
-Implements a navigation component that includes a similar look as the iOS7 / iOS8 one.
+Implements a navigation component for Framer. It includes:
+
+- Default transitions for pushing and popping views, based on iOS UINavigationController, that you can replace with your own ones.
+- Default header style and animations to show the current and previous layer, also easily customizable.
 
 ## Basic usage
 
@@ -33,35 +36,32 @@ Implements a navigation component that includes a similar look as the iOS7 / iOS
 	
 NavigationComponent = (require "navigationComponent").NavigationComponent
 
-firstLayer = new Layer
-	width: Screen.width
-	height: Screen.height
-	html: "1"
-	backgroundColor: "white"
-firstLayer.title = "First screen"
-firstLayer.style =
-	"font-size" : "600px",
-	"color" : "orange",
-	"line-height" : Screen.height + "px",
-	"font-weight" : "bold",
-	"text-align" : "center",
+createFullScreenLayer = (text, title) ->
+	newLayer = new Layer
+		width: Screen.width
+		height: Screen.height
+		html: text
+		backgroundColor: Framer.Utils.randomColor()
+	newLayer.title = title
+	newLayer.style =
+		"font-size" : "600px"
+		"color" : "white"
+		"line-height" : Screen.height + "px"
+		"font-weight" : "bold"
+		"text-align" : "center"
+	return newLayer
+	
+firstLayer = createFullScreenLayer("1", "Settings")
+firstLayer.name = "First screen"
+firstLayer.backgroundColor = "white"
+firstLayer.style["color"] = "orange"
 
 navigationComponent = new NavigationComponent
 	initialLayer: firstLayer
 
-
 firstLayer.on Events.Click, ->
-	secondLayer = new Layer
-		width: Screen.width
-		height: Screen.height
-		html: "2"
-	secondLayer.title = "Second screen"
-	secondLayer.style = firstLayer.style
-	secondLayer.backgroundColor = Framer.Utils.randomColor()
-	secondLayer.color = "white"
-	
-	secondLayer.on Events.Click, ->
-		navigationComponent.pop()
+	secondLayer = createFullScreenLayer("2", "Long title screen")
+	secondLayer.name = "Second screen"
 	navigationComponent.push(secondLayer)
-
+	
 ```
