@@ -27,10 +27,10 @@ A navigation component for Framer. It includes:
 
 ## Functions
 
-- `push` — Push a new layer into the navigation component.
-- `pop` — Pop the latest added layer from the navigation component. NOTE: The layer popped is destroyed after being removed from the navigation component, so you might want to create a copy if you want to reuse it later.
-- `popToRootLayer` — Pops to the root layer.
-- `popToLayerAtIndex_(index)_` — Pops layers until the specified index is at the top of the navigation stack
+- `push()` — Push a new layer into the navigation component.
+- `pop()` — Pop the latest added layer from the navigation component. NOTE: The layer popped is destroyed after being removed from the navigation component, so you might want to create a copy if you want to reuse it later.
+- `popToRootLayer()` — Pops to the root layer.
+- `popToLayerAtIndex(index)` — Pops layers until the specified index is at the top of the navigation stack
 
 ## Simple example
 
