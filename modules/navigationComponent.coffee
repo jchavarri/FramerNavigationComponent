@@ -1,9 +1,14 @@
 class exports.NavigationComponent extends Layer
 	
+	#iOS animation constants
 	_ANIMATION_TIME = 0.4
 	_ANIMATION_CURVE = "cubic-bezier(.6, .1, .3, 1)"
+	_LEFT_PADDING = if Framer.Device.deviceType.indexOf("iphone-6plus") is -1 then 46 else 69
+	
+	# Shared class variables		
 	navigationComponentsCounter = 1
 	
+	# Public constructor
 	constructor: (@options={}) ->
 
 		# Check required params
@@ -68,6 +73,7 @@ class exports.NavigationComponent extends Layer
 				height: @headerLayer.height
 				backgroundColor: ""
 				opacity: 0
+				x: _LEFT_PADDING
 			leftLayer.style =
 				"font-size" : "34px"
 				"color" : "rgb(21, 125, 251)"
@@ -111,9 +117,10 @@ class exports.NavigationComponent extends Layer
 			@currentLayerIndex = 0
 			@addSubLayer(@options.initialLayer)
 			@headerLayer.bringToFront()
-			if @options.initialLayer.title
+			if @options.initialLayer.title and @headerLayer.titleLayer
 				@headerLayer.titleLayer.html = "<div style=\"overflow: hidden; text-overflow: ellipsis\">" + @options.initialLayer.title + "</div>"
 
+	# Public methods
 	push: (layer) ->
 		if not @lock
 			@lock = true
@@ -130,6 +137,7 @@ class exports.NavigationComponent extends Layer
 			@currentLayerIndex++
 			@animationPush(currentLayer, nextLayer)
 			Utils.delay @animationTime, =>
+				currentLayer.visible = false
 				@lock = false
 		else
 			# If there was a transitioning going on, just remove the new layer
@@ -141,6 +149,7 @@ class exports.NavigationComponent extends Layer
 			if @currentLayerIndex > 0
 				currentLayer = @navigationLayers[@currentLayerIndex]
 				nextLayer = @navigationLayers[@currentLayerIndex - 1]
+				nextLayer.visible = true
 				if typeof currentLayer.layerWillDisappear is "function"
 					currentLayer.layerWillDisappear()
 				if typeof nextLayer.layerWillAppear is "function"
@@ -153,6 +162,44 @@ class exports.NavigationComponent extends Layer
 					@lock = false
 			else
 				@lock = false
+
+	#Private methods
+	_animateHeaderSubLayer: (subLayerName, fromLayer, toLayer, newTitle, currentToX, newFromX) ->
+		if @headerLayer[subLayerName]
+			headerSubLayer = @headerLayer[subLayerName]
+			origSubLayerX = headerSubLayer.x
+				
+			# Animate current sublayer
+			headerSubLayer.animate
+				properties:
+					opacity: 0
+					x: currentToX
+				curve: _ANIMATION_CURVE
+				time: _ANIMATION_TIME
+			
+			#Create new layer to animate
+			if newTitle isnt undefined
+				newHeaderSubLayer = headerSubLayer.copy()
+				newHeaderSubLayer.style = headerSubLayer.style
+				@headerLayer.addSubLayer(newHeaderSubLayer)
+				newHeaderSubLayer.name = "tmp " + subLayerName
+				newHeaderSubLayer.x = newFromX
+				newHeaderSubLayer.opacity = 0
+				newHeaderSubLayer.html = "<div style=\"overflow: hidden; text-overflow: ellipsis\">" + newTitle + "</div>"
+				newHeaderSubLayerAnimation = new Animation
+					layer: newHeaderSubLayer
+					properties:
+						opacity: 1
+						x: origSubLayerX
+					curve: _ANIMATION_CURVE
+					time: _ANIMATION_TIME
+				newHeaderSubLayerAnimation.start()
+				newHeaderSubLayerAnimation.on "end", ->
+					headerSubLayer.html = newHeaderSubLayer.html
+					headerSubLayer.opacity = 1
+					headerSubLayer.x = origSubLayerX
+					newHeaderSubLayer.destroy()
+
 
 	_defaultAnimationPush: (fromLayer, toLayer) ->
 		shadowLayer = new Layer
@@ -184,41 +231,10 @@ class exports.NavigationComponent extends Layer
 
 		#Animate header
 		if @headerLayer
-			leftPadding = 46
-			if Framer.Device.deviceType.indexOf("iphone-6plus") >= 0
-				leftPadding = leftPadding * 1.5
-			#New title
-			if @headerLayer.titleLayer
-				titleLayer = @headerLayer.titleLayer
-				
-				# Animate current title to go left
-				titleLayer.animate
-					properties:
-						opacity: 0
-						x: -leftPadding
-					curve: _ANIMATION_CURVE
-					time: _ANIMATION_TIME
-				
-				#Create new title to animate from the right side of the screen
-				newTitleLayer = titleLayer.copy()
-				newTitleLayer.style = titleLayer.style
-				@headerLayer.addSubLayer(newTitleLayer)
-				newTitleLayer.name = "Tmp Title"
-				newTitleLayer.x = @headerLayer.width
-				newTitleLayer.html = "<div style=\"overflow: hidden; text-overflow: ellipsis\">" + toLayer.title + "</div>"
-				newTitleAnimation = new Animation
-					layer: newTitleLayer
-					properties:
-						opacity: 1
-						x: titleLayer.x
-					curve: _ANIMATION_CURVE
-					time: _ANIMATION_TIME
-				newTitleAnimation.start()
-				newTitleAnimation.on "end", ->
-					titleLayer.html = newTitleLayer.html
-					titleLayer.opacity = 1
-					titleLayer.centerX()
-					newTitleLayer.destroy()
+			
+			@_animateHeaderSubLayer("titleLayer", fromLayer, toLayer, toLayer.title, -_LEFT_PADDING, @headerLayer.width)
+
+			@_animateHeaderSubLayer("leftLayer", fromLayer, toLayer, fromLayer.title, - @headerLayer.width / 2, @headerLayer.width / 2)
 
 			if @headerLayer.backArrow
 				@headerLayer.backArrow.animate
@@ -227,41 +243,6 @@ class exports.NavigationComponent extends Layer
 					curve: _ANIMATION_CURVE
 					time: _ANIMATION_TIME
 			
-			#New left layer
-			if @headerLayer.leftLayer
-				leftLayer = @headerLayer.leftLayer
-				
-				# Animate current left layer to go left
-				leftLayer.animate
-					properties:
-						opacity: 0
-						x: - @headerLayer.width / 2
-					curve: _ANIMATION_CURVE
-					time: _ANIMATION_TIME
-				
-				#Create new left layer to animate from the left side of the screen
-				newLeftLayer = leftLayer.copy()
-				newLeftLayer.style = leftLayer.style
-				@headerLayer.addSubLayer(newLeftLayer)
-				newLeftLayer.name = "Tmp Left Layer"
-				newLeftLayer.centerX()
-				newLeftLayer.opacity = 0
-				newLeftLayer.html = "<div style=\"overflow: hidden; text-overflow: ellipsis\">" + fromLayer.title + "</div>"
-				newLeftLayerAnimation = new Animation
-					layer: newLeftLayer
-					properties:
-						opacity: 1
-						x: leftPadding
-					curve: _ANIMATION_CURVE
-					time: _ANIMATION_TIME
-				newLeftLayerAnimation.start()
-				newLeftLayerAnimation.on "end", ->
-					leftLayer.html = newLeftLayer.html
-					leftLayer.x = leftPadding
-					leftLayer.opacity = 1
-					newLeftLayer.destroy()
-
-
 	_defaultAnimationPop: (fromLayer, toLayer) ->
 		fromLayer.animate
 			properties:
@@ -286,76 +267,14 @@ class exports.NavigationComponent extends Layer
 		
 		#Animate header
 		if @headerLayer
-			#New title
-			if @headerLayer.titleLayer
-				titleLayer = @headerLayer.titleLayer
-				
-				# Animate current title to go right
-				titleLayer.animate
-					properties:
-						opacity: 0
-						x: @headerLayer.width
-					curve: _ANIMATION_CURVE
-					time: _ANIMATION_TIME
-				
-				#Create new title to animate from the right side of the screen
-				newTitleLayer = titleLayer.copy()
-				newTitleLayer.style = titleLayer.style
-				@headerLayer.addSubLayer(newTitleLayer)
-				newTitleLayer.name = "Tmp Title"
-				newTitleLayer.x = 0
-				newTitleLayer.opacity = 0
-				newTitleLayer.html = "<div style=\"overflow: hidden; text-overflow: ellipsis\">" + toLayer.title + "</div>"
-				newTitleAnimation = new Animation
-					layer: newTitleLayer
-					properties:
-						opacity: 1
-						x: titleLayer.x
-					curve: _ANIMATION_CURVE
-					time: _ANIMATION_TIME
-				newTitleAnimation.start()
-				newTitleAnimation.on "end", ->
-					titleLayer.html = newTitleLayer.html
-					titleLayer.opacity = 1
-					titleLayer.centerX()
-					newTitleLayer.destroy()
 
-			#New left layer
-			if @headerLayer.leftLayer
-				leftLayer = @headerLayer.leftLayer
-				
-				# Animate current left layer to go right
-				origLeftLayerX = leftLayer.x
-				leftLayer.animate
-					properties:
-						opacity: 0
-						x: @headerLayer.width / 2
-					curve: _ANIMATION_CURVE
-					time: _ANIMATION_TIME
-				
-				if @navigationLayers.length > 2 and @navigationLayers[@currentLayerIndex - 2] and @navigationLayers[@currentLayerIndex - 2].title
-					#Create new left layer to animate from the left side of the screen
-					newLeftLayer = leftLayer.copy()
-					newLeftLayer.style = leftLayer.style
-					@headerLayer.addSubLayer(newLeftLayer)
-					newLeftLayer.name = "Tmp Left Layer"
-					newLeftLayer.x = -newLeftLayer.width
-					newLeftLayer.opacity = 0
-					newLeftLayer.html = "<div style=\"overflow: hidden; text-overflow: ellipsis\">" + @navigationLayers[@currentLayerIndex - 2].title + "</div>"
-					newLeftLayerAnimation = new Animation
-						layer: newLeftLayer
-						properties:
-							opacity: 1
-							x: leftLayer.x
-						curve: _ANIMATION_CURVE
-						time: _ANIMATION_TIME
-					newLeftLayerAnimation.start()
-					newLeftLayerAnimation.on "end", ->
-						leftLayer.html = newLeftLayer.html
-						leftLayer.x = origLeftLayerX
-						leftLayer.opacity = 1
-						newLeftLayer.destroy()
-
+			@_animateHeaderSubLayer("titleLayer", fromLayer, toLayer, toLayer.title, @headerLayer.width, 0)
+			
+			newLeftLayerTitle = ""
+			if @navigationLayers.length > 2 and @navigationLayers[@currentLayerIndex - 2] and @navigationLayers[@currentLayerIndex - 2].title
+				newLeftLayerTitle = @navigationLayers[@currentLayerIndex - 2].title
+			@_animateHeaderSubLayer("leftLayer", fromLayer, toLayer, newLeftLayerTitle, @headerLayer.width / 2, -@headerLayer.width / 2)
+			
 		if @navigationLayers.length is 2
 			if @headerLayer.backArrow
 				@headerLayer.backArrow.animate
