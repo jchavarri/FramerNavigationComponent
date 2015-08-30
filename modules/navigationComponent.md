@@ -14,15 +14,15 @@ A navigation component for Framer. It includes:
 
 ## Constructor params
 
-- `firstLayer` _(required)_ — The layer to initialize the navigation component with.
+- `firstLayer` *(required)* — The layer to initialize the navigation component with.
 - `animationPush` — A function that is called when the push animation is needed. It expects two parameters: `fromLayer` -the layer that is on-screen and is going to be pushed- and `toLayer` -the layer that will be shown-. Use this parameter to implement custom animations.
 - `animationPop` — You guessed it :) Same as `animationPush` but when popping.
-- `animationTime` — A custom transition time. **This parameter is required when implementing custom animations**.
+- `animationTime` — A custom transition time. *This parameter is required when implementing custom animations*.
 
 ## Properties
 
 - `navigationLayers` — The array of layers that are handled by the navigation component.
-- `headerLayer` — The layer that is shown on top of the navigation layer. By default, this layer shows always a custom property `title` string that can be added to each layer added to the navigation component.
+- `headerLayer` — The layer that is shown on top of the navigation layer. By default, this layer shows always a custom property `title` string that can be added to each layer on the navigation stack.
 - `currentLayerIndex` — The index of the layer that is being shown.
 
 ## Functions

@@ -22,10 +22,9 @@ Implements a navigation component with a similar default configuration as the iO
 
 - Navigation component
 	- Add slide right to pop
-	- Add popToRootLayer
 	- Replace header layers for state transitions
 
-- Add other components
+- Other components
 	- Table View
 	- Refresh control
 	- Segmented control
