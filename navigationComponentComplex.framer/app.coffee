@@ -24,7 +24,7 @@ navigationComponent = new NavigationComponent
 	rootLayer: firstLayer
 
 firstLayer.on Events.Click, ->
-	secondLayer = createFullScreenLayer("2", "Long title screen")
+	secondLayer = createFullScreenLayer("2", "User profile")
 	secondLayer.name = "Second screen"
 	secondLayer.on Events.Click, ->
 		thirdLayer = createFullScreenLayer("3", "Notifications")
@@ -40,9 +40,11 @@ firstLayer.on Events.Click, ->
 			html: "Back home"
 		backButton.style =
 			color: "black"
-			lineHeight: (backButton.height + 6) + "px"
+			lineHeight: backButton.height + "px"
 			textAlign: "center"
-			fontSize: "32px"
+			fontSize: "34px"
+			fontWeight: 500
+			fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif"
 			boxShadow: "0 1px 3px rgba(0,0,0,0.2)"
 		backButton.centerX()
 		backButton.on Events.Click, ->

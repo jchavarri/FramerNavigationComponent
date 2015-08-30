@@ -32,6 +32,13 @@ A navigation component for Framer. It includes:
 - `popToRootLayer()` — Pops to the root layer.
 - `popToLayerAtIndex(index)` — Pops layers until the specified index is at the top of the navigation stack
 
+## Events
+
+- `Events.NavigationWillPush` — Called before a new layer is pushed into the navigation stack. It includes an object that has the following properties: `navigationLayer`, `currentLayer` and `nextLayer`.
+- `Events.NavigationDidPush` — Called after a new layer has been pushed into the navigation stack. It includes an object that has the following properties: `navigationLayer`, `currentLayer` and `nextLayer`.
+- `Events.NavigationWillPop` — Called before a layer (or layers) are popped from the navigation stack. It includes an object that has the following properties: `navigationLayer`, `currentLayer`, `nextLayer` and `index`.
+- `Events.NavigationDidPop` — Called after a layer (or layers) are popped from the navigation stack. It includes an object that has the following properties: `navigationLayer`, `currentLayer`, `nextLayer` and `index`.
+
 ## Simple example
 
 ```coffee

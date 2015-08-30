@@ -25,6 +25,7 @@ Implements a navigation component with a similar default configuration as the iO
 - Navigation component
 	- Add slide right to pop
 	- Replace header layers for state transitions
+	- Add right button action
 
 - Other components
 	- Table View

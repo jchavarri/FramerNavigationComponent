@@ -1,9 +1,15 @@
 class exports.NavigationComponent extends Layer
 	
 	#iOS animation constants
-	_ANIMATION_TIME = 0.4
-	_ANIMATION_CURVE = "cubic-bezier(.6, .1, .3, 1)"
-	_LEFT_PADDING = if Framer.Device.deviceType.indexOf("iphone-6plus") is -1 then 46 else 69
+	_ANIMATION_TIME 			= 0.4
+	_ANIMATION_CURVE 			= "cubic-bezier(.6, .1, .3, 1)"
+	_LEFT_PADDING 				= if Framer.Device.deviceType.indexOf("iphone-6plus") is -1 then 46 else 69
+	
+	#Custom events
+	Events.NavigationWillPush 	= "navigationWillPush"
+	Events.NavigationDidPush 	= "navigationDidPush"
+	Events.NavigationWillPop 	= "navigationWillPop"
+	Events.NavigationDidPop 	= "navigationDidPop"
 	
 	# Shared class variables		
 	navigationComponentsCounter = 1
@@ -29,6 +35,7 @@ class exports.NavigationComponent extends Layer
 		@navigationLayers   = []
 		@headerLayer 		= null
 		@animationTime 		= @options.animationTime or _ANIMATION_TIME
+		@animationCurve		= @options.animationCurve or _ANIMATION_CURVE
 		@animationPush 		= @options.animationPush or @_defaultAnimationPush
 		@animationPop		= @options.animationPop or @_defaultAnimationPop
 		@currentLayerIndex 	= -1
@@ -126,6 +133,7 @@ class exports.NavigationComponent extends Layer
 	# Public methods
 	push: (layer) ->
 		if not @lock
+			@emit(Events.NavigationWillPush, {navigationLayer: @, currentLayer: currentLayer, nextLayer: nextLayer})
 			@lock = true
 			@navigationLayers.push(layer)
 			@addSubLayer(layer)
@@ -143,6 +151,7 @@ class exports.NavigationComponent extends Layer
 			Utils.delay @animationTime, =>
 				currentLayer.visible = false
 				@lock = false
+				@emit(Events.NavigationDidPush, {navigationLayer: @, currentLayer: currentLayer, nextLayer: nextLayer})
 		else
 			# If there was a transitioning going on, just remove the new layer
 			layer.destroy()
@@ -157,6 +166,7 @@ class exports.NavigationComponent extends Layer
 		if not @lock
 			@lock = true
 			if @currentLayerIndex > 0 and (0 <= index <= @navigationLayers.length)
+				@emit(Events.NavigationWillPop, {navigationLayer: @, index: index, currentLayer: currentLayer, nextLayer: nextLayer})
 				currentLayer = @navigationLayers[@currentLayerIndex]
 				nextLayer = @navigationLayers[index]
 				nextLayer.visible = true
@@ -173,6 +183,7 @@ class exports.NavigationComponent extends Layer
 						@navigationLayers.pop()
 					@currentLayerIndex = index
 					@lock = false
+					@emit(Events.NavigationDidPop, {navigationLayer: @, index: index, currentLayer: currentLayer, nextLayer: nextLayer})
 			else
 				@lock = false
 
