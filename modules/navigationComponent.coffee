@@ -23,6 +23,7 @@ class exports.NavigationComponent extends Layer
 		@options.name 			 ?= "Navigation Component " + navigationComponentsCounter
 
 		super @options
+		
 		navigationComponentsCounter++
 
 		@navigationLayers   = []
@@ -30,12 +31,14 @@ class exports.NavigationComponent extends Layer
 		@animationTime 		= @options.animationTime or _ANIMATION_TIME
 		@animationPush 		= @options.animationPush or @_defaultAnimationPush
 		@animationPop		= @options.animationPop or @_defaultAnimationPop
-		@currentLayerIndex = -1
-		@lock = false
+		@currentLayerIndex 	= -1
+		@lock 				= false
+		@customHeader 		= false
 		
 		if @options.headerLayer
 			@headerLayer = @options.headerLayer
 			@addSubLayer(@headerLayer)
+			@customHeader = true
 		else # Default iOS7 header
 			@headerLayer = new Layer
 				superLayer: @
@@ -136,6 +139,7 @@ class exports.NavigationComponent extends Layer
 				nextLayer.layerWillAppear()
 			@currentLayerIndex++
 			@animationPush(currentLayer, nextLayer)
+			@_defaultHeaderAnimationPush(currentLayer, nextLayer)
 			Utils.delay @animationTime, =>
 				currentLayer.visible = false
 				@lock = false
@@ -155,6 +159,7 @@ class exports.NavigationComponent extends Layer
 				if typeof nextLayer.layerWillAppear is "function"
 					nextLayer.layerWillAppear()
 				@animationPop(currentLayer, nextLayer)
+				@_defaultHeaderAnimationPop(currentLayer, nextLayer)
 				Utils.delay @animationTime, =>
 					@navigationLayers.pop(currentLayer)
 					@currentLayerIndex--
@@ -163,7 +168,8 @@ class exports.NavigationComponent extends Layer
 			else
 				@lock = false
 
-	#Private methods
+	# Private methods
+
 	_animateHeaderSubLayer: (subLayerName, fromLayer, toLayer, newTitle, currentToX, newFromX) ->
 		if @headerLayer[subLayerName]
 			headerSubLayer = @headerLayer[subLayerName]
@@ -200,6 +206,39 @@ class exports.NavigationComponent extends Layer
 					headerSubLayer.x = origSubLayerX
 					newHeaderSubLayer.destroy()
 
+	_defaultHeaderAnimationPush: (fromLayer, toLayer)->
+		if @headerLayer and not @customHeader
+			
+			@_animateHeaderSubLayer("titleLayer", fromLayer, toLayer, toLayer.title, -_LEFT_PADDING, @headerLayer.width)
+
+			@_animateHeaderSubLayer("leftLayer", fromLayer, toLayer, fromLayer.title, - @headerLayer.width / 2, @headerLayer.width / 2)
+
+			if @headerLayer.backArrow
+				@headerLayer.backArrow.animate
+					properties:
+						opacity: 1
+					curve: _ANIMATION_CURVE
+					time: _ANIMATION_TIME
+
+	_defaultHeaderAnimationPop: (fromLayer, toLayer)->
+		#Animate header
+		if @headerLayer and not @customHeader
+
+			@_animateHeaderSubLayer("titleLayer", fromLayer, toLayer, toLayer.title, @headerLayer.width, 0)
+			
+			newLeftLayerTitle = ""
+			if @navigationLayers.length > 2 and @navigationLayers[@currentLayerIndex - 2] and @navigationLayers[@currentLayerIndex - 2].title
+				newLeftLayerTitle = @navigationLayers[@currentLayerIndex - 2].title
+			@_animateHeaderSubLayer("leftLayer", fromLayer, toLayer, newLeftLayerTitle, @headerLayer.width / 2, -@headerLayer.width / 2)
+			
+			if @navigationLayers.length is 2
+				if @headerLayer.backArrow
+					@headerLayer.backArrow.animate
+						properties:
+							opacity: 0
+						curve: _ANIMATION_CURVE
+						time: _ANIMATION_TIME
+
 
 	_defaultAnimationPush: (fromLayer, toLayer) ->
 		shadowLayer = new Layer
@@ -229,19 +268,6 @@ class exports.NavigationComponent extends Layer
 			curve: _ANIMATION_CURVE
 			time: _ANIMATION_TIME
 
-		#Animate header
-		if @headerLayer
-			
-			@_animateHeaderSubLayer("titleLayer", fromLayer, toLayer, toLayer.title, -_LEFT_PADDING, @headerLayer.width)
-
-			@_animateHeaderSubLayer("leftLayer", fromLayer, toLayer, fromLayer.title, - @headerLayer.width / 2, @headerLayer.width / 2)
-
-			if @headerLayer.backArrow
-				@headerLayer.backArrow.animate
-					properties:
-						opacity: 1
-					curve: _ANIMATION_CURVE
-					time: _ANIMATION_TIME
 			
 	_defaultAnimationPop: (fromLayer, toLayer) ->
 		fromLayer.animate
@@ -265,20 +291,3 @@ class exports.NavigationComponent extends Layer
 		shadowLayerAnimation.on "end", ->
 			shadowLayer.destroy()
 		
-		#Animate header
-		if @headerLayer
-
-			@_animateHeaderSubLayer("titleLayer", fromLayer, toLayer, toLayer.title, @headerLayer.width, 0)
-			
-			newLeftLayerTitle = ""
-			if @navigationLayers.length > 2 and @navigationLayers[@currentLayerIndex - 2] and @navigationLayers[@currentLayerIndex - 2].title
-				newLeftLayerTitle = @navigationLayers[@currentLayerIndex - 2].title
-			@_animateHeaderSubLayer("leftLayer", fromLayer, toLayer, newLeftLayerTitle, @headerLayer.width / 2, -@headerLayer.width / 2)
-			
-		if @navigationLayers.length is 2
-			if @headerLayer.backArrow
-				@headerLayer.backArrow.animate
-					properties:
-						opacity: 0
-					curve: _ANIMATION_CURVE
-					time: _ANIMATION_TIME

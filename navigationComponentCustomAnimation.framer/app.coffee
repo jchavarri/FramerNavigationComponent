@@ -1,72 +1,53 @@
 NavigationComponent = (require "navigationComponent").NavigationComponent
 
-firstLayer = new Layer
-	width: Screen.width
-	height: Screen.height
-	html: "1"
-	backgroundColor: "white"
-firstLayer.title = "First screen"
-firstLayer.style =
-	"font-size" : "600px",
-	"color" : "orange",
-	"line-height" : Screen.height + "px",
-	"font-weight" : "bold",
-	"text-align" : "center",
-
-# Custom configuration for Navigation Component
 animationTime = 0.5
 animationCurve = "spring(300,40,0)"
-animationPush = (fromLayer, toLayer) ->
-	fromLayer.animate
-		properties:
+
+createFullScreenLayer = (text, title) ->
+	newLayer = new Layer
+		width: Screen.width
+		height: Screen.height
+		html: text
+		backgroundColor: Framer.Utils.randomColor()
+	newLayer.title = title
+	newLayer.style =
+		"font-size" : "600px"
+		"color" : "white"
+		"line-height" : Screen.height + "px"
+		"font-weight" : "bold"
+		"text-align" : "center"
+	newLayer.states.add
+		pushed:
 			scale: 5
 			opacity: 0
-		time: animationTime
-		curve: animationCurve
-	toLayer.scale = 0.2
-	toLayer.opacity = 0
-	toLayer.animate
-		properties:
-			scale: 1
-			opacity: 1
-		time: animationTime
-		curve: animationCurve
-	if toLayer.title
-		navigationComponent.headerLayer.html = toLayer.title
-animationPop = (fromLayer, toLayer) ->
-	fromLayer.animate
-		properties:
-			scale: 0
+		popped:
+			scale: 0.2
 			opacity: 0
-		time: animationTime
-		curve: animationCurve
-	toLayer.animate
-		properties:
-			scale: 1
-			opacity: 1
-		time: animationTime
-		curve: animationCurve
-	if toLayer.title
-		navigationComponent.headerLayer.html = toLayer.title
+	newLayer.states.animationOptions =
+		curve: "spring(300,40,0)"
+		time: 0.5
+	return newLayer
+	
+firstLayer = createFullScreenLayer("1", "Settings")
+firstLayer.name = "First screen"
+firstLayer.backgroundColor = "white"
+firstLayer.style["color"] = "orange"
+firstLayer.on Events.Click, ->
+	secondLayer = createFullScreenLayer("2", "User configuration")
+	navigationComponent.push(secondLayer)
+
+# Custom configuration for Navigation Component
+animationPush = (fromLayer, toLayer) ->
+	fromLayer.states.switch("pushed")
+	toLayer.states.switchInstant("popped")
+	toLayer.states.switch("default")
+animationPop = (fromLayer, toLayer) ->
+	fromLayer.states.switch("popped")
+	toLayer.states.switchInstant("pushed")
+	toLayer.states.switch("default")
 	
 navigationComponent = new NavigationComponent
 	initialLayer: firstLayer
 	animationTime: animationTime
 	animationPush: animationPush
 	animationPop: animationPop
-
-firstLayer.on Events.Click, ->
-	secondLayer = new Layer
-		width: Screen.width
-		height: Screen.height
-		html: "2"
-	secondLayer.title = "Second screen"
-	secondLayer.style = firstLayer.style
-	secondLayer.backgroundColor = Framer.Utils.randomColor()
-	secondLayer.color = "white"
-	
-	secondLayer.on Events.Click, ->
-		navigationComponent.pop()
-	navigationComponent.push(secondLayer)
-
-

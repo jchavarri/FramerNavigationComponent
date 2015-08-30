@@ -23,7 +23,7 @@ Implements a navigation component with a similar default configuration as the iO
 - Navigation component
 	- Add slide right to pop
 	- Add popToRootLayer
-	- Add header back button
+	- Replace header layers for state transitions
 
 - Add other components
 	- Table View
