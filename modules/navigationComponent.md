@@ -12,8 +12,8 @@ A navigation component for Framer. It includes:
 #### [Custom header](http://share.framerjs.com/r6k5788vlyds/)
 #### [Custom transition animation](http://share.framerjs.com/c7e89e4wnvu0/)
 
-![Custom header](navigationComponentCustomHeader.framer/images/demo.gif)
-![Custom transition animation](navigationComponentCustomAnimation.framer/images/demo.gif)
+![Custom header](../navigationComponentCustomHeader.framer/images/demo.gif)
+![Custom transition animation](../navigationComponentCustomAnimation.framer/images/demo.gif)
 
 ## Get started
 
