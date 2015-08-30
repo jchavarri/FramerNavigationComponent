@@ -21,7 +21,7 @@ firstLayer.backgroundColor = "white"
 firstLayer.style["color"] = "orange"
 
 navigationComponent = new NavigationComponent
-	initialLayer: firstLayer
+	rootLayer: firstLayer
 
 firstLayer.on Events.Click, ->
 	secondLayer = createFullScreenLayer("2", "Long title screen")

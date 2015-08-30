@@ -47,7 +47,7 @@ animationPop = (fromLayer, toLayer) ->
 	toLayer.states.switch("default")
 	
 navigationComponent = new NavigationComponent
-	initialLayer: firstLayer
+	rootLayer: firstLayer
 	animationTime: animationTime
 	animationPush: animationPush
 	animationPop: animationPop

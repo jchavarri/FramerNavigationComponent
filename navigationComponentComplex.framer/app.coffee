@@ -21,7 +21,7 @@ firstLayer.backgroundColor = "white"
 firstLayer.style["color"] = "orange"
 
 navigationComponent = new NavigationComponent
-	initialLayer: firstLayer
+	rootLayer: firstLayer
 
 firstLayer.on Events.Click, ->
 	secondLayer = createFullScreenLayer("2", "Long title screen")
@@ -29,5 +29,7 @@ firstLayer.on Events.Click, ->
 	secondLayer.on Events.Click, ->
 		thirdLayer = createFullScreenLayer("3", "Notifications")
 		thirdLayer.name = "Third screen"
+		thirdLayer.on Events.Click, ->
+			navigationComponent.popToRootLayer()
 		navigationComponent.push(thirdLayer)
 	navigationComponent.push(secondLayer)

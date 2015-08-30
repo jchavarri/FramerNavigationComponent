@@ -12,8 +12,8 @@ class exports.NavigationComponent extends Layer
 	constructor: (@options={}) ->
 
 		# Check required params
-		if not @options.initialLayer
-			throw new Error("Can't initialize NavigationComponent: parameter 'initialLayer' is required.")
+		if not @options.rootLayer
+			throw new Error("Can't initialize NavigationComponent: parameter 'rootLayer' is required.")
 			return
 
 		@options.width           ?= Screen.width
@@ -115,13 +115,13 @@ class exports.NavigationComponent extends Layer
 				leftLayer.width = leftLayer.width * 1.5
 				backArrow.scale = 1.5
 				
-		if @options.initialLayer
-			@navigationLayers = [@options.initialLayer]
+		if @options.rootLayer
+			@navigationLayers = [@options.rootLayer]
 			@currentLayerIndex = 0
-			@addSubLayer(@options.initialLayer)
+			@addSubLayer(@options.rootLayer)
 			@headerLayer.bringToFront()
-			if @options.initialLayer.title and @headerLayer.titleLayer
-				@headerLayer.titleLayer.html = "<div style=\"overflow: hidden; text-overflow: ellipsis\">" + @options.initialLayer.title + "</div>"
+			if @options.rootLayer.title and @headerLayer.titleLayer
+				@headerLayer.titleLayer.html = "<div style=\"overflow: hidden; text-overflow: ellipsis\">" + @options.rootLayer.title + "</div>"
 
 	# Public methods
 	push: (layer) ->
@@ -148,22 +148,30 @@ class exports.NavigationComponent extends Layer
 			layer.destroy()
 		
 	pop: ->
+		@popToLayerAtIndex(@currentLayerIndex - 1)
+
+	popToRootLayer: ->
+		@popToLayerAtIndex(0)
+
+	popToLayerAtIndex: (index) ->
 		if not @lock
 			@lock = true
-			if @currentLayerIndex > 0
+			if @currentLayerIndex > 0 and (0 <= index <= @navigationLayers.length)
 				currentLayer = @navigationLayers[@currentLayerIndex]
-				nextLayer = @navigationLayers[@currentLayerIndex - 1]
+				nextLayer = @navigationLayers[index]
 				nextLayer.visible = true
 				if typeof currentLayer.layerWillDisappear is "function"
 					currentLayer.layerWillDisappear()
 				if typeof nextLayer.layerWillAppear is "function"
 					nextLayer.layerWillAppear()
 				@animationPop(currentLayer, nextLayer)
-				@_defaultHeaderAnimationPop(currentLayer, nextLayer)
+				@_defaultHeaderAnimationPop(currentLayer, nextLayer, index)
 				Utils.delay @animationTime, =>
-					@navigationLayers.pop(currentLayer)
-					@currentLayerIndex--
-					currentLayer.destroy()
+					for indexToBeDeleted in [@navigationLayers.length-1..index+1]
+						layerToBeDeleted = @navigationLayers[indexToBeDeleted]
+						layerToBeDeleted.destroy()
+						@navigationLayers.pop()
+					@currentLayerIndex = index
 					@lock = false
 			else
 				@lock = false
@@ -220,25 +228,24 @@ class exports.NavigationComponent extends Layer
 					curve: _ANIMATION_CURVE
 					time: _ANIMATION_TIME
 
-	_defaultHeaderAnimationPop: (fromLayer, toLayer)->
+	_defaultHeaderAnimationPop: (fromLayer, toLayer, index)->
 		#Animate header
 		if @headerLayer and not @customHeader
 
 			@_animateHeaderSubLayer("titleLayer", fromLayer, toLayer, toLayer.title, @headerLayer.width, 0)
 			
 			newLeftLayerTitle = ""
-			if @navigationLayers.length > 2 and @navigationLayers[@currentLayerIndex - 2] and @navigationLayers[@currentLayerIndex - 2].title
-				newLeftLayerTitle = @navigationLayers[@currentLayerIndex - 2].title
-			@_animateHeaderSubLayer("leftLayer", fromLayer, toLayer, newLeftLayerTitle, @headerLayer.width / 2, -@headerLayer.width / 2)
-			
-			if @navigationLayers.length is 2
+			if @navigationLayers[index - 1] and @navigationLayers[index - 1].title
+				newLeftLayerTitle = @navigationLayers[index - 1].title
+			else 
 				if @headerLayer.backArrow
 					@headerLayer.backArrow.animate
 						properties:
 							opacity: 0
 						curve: _ANIMATION_CURVE
 						time: _ANIMATION_TIME
-
+			@_animateHeaderSubLayer("leftLayer", fromLayer, toLayer, newLeftLayerTitle, @headerLayer.width / 2, -@headerLayer.width / 2)
+			
 
 	_defaultAnimationPush: (fromLayer, toLayer) ->
 		shadowLayer = new Layer

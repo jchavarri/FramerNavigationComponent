@@ -1,16 +1,16 @@
 # Navigation Component
 
-Implements a navigation component for Framer. It includes:
+A navigation component for Framer. It includes:
 
 - Default transitions for pushing and popping views, based on iOS UINavigationController, that you can replace with your own ones.
 - Default header style and animations to show the current and previous layer, also easily customizable.
 
-## Basic usage
+## Get started
 
 - Copy the `navigationComponent.coffee` file into your `modules` folder
 - Add `NavigationComponent = (require "navigationComponent").NavigationComponent`
 - Create the NavigationComponent: `navigationComponent = new NavigationComponent
-	initialLayer: yourFirstLayer`
+	rootLayer: yourFirstLayer`
 
 ## Constructor params
 
@@ -29,6 +29,8 @@ Implements a navigation component for Framer. It includes:
 
 - `push` — Push a new layer into the navigation component.
 - `pop` — Pop the latest added layer from the navigation component. NOTE: The layer popped is destroyed after being removed from the navigation component, so you might want to create a copy if you want to reuse it later.
+- `popToRootLayer` — Pops to the root layer.
+- `popToLayerAtIndex_(index)_` — Pops layers until the specified index is at the top of the navigation stack
 
 ## Simple example
 
@@ -57,11 +59,11 @@ firstLayer.backgroundColor = "white"
 firstLayer.style["color"] = "orange"
 
 navigationComponent = new NavigationComponent
-	initialLayer: firstLayer
+	rootLayer: firstLayer
 
 firstLayer.on Events.Click, ->
 	secondLayer = createFullScreenLayer("2", "Long title screen")
 	secondLayer.name = "Second screen"
 	navigationComponent.push(secondLayer)
-	
+
 ```
